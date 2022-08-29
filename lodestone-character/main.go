@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"strconv"
 
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/karashiiro/bingode"
@@ -9,7 +10,7 @@ import (
 )
 
 type LodestoneCharacterEvent struct {
-	ID uint32 `json:"id"`
+	ID string `json:"id"`
 }
 
 type LodestoneCharacterResult struct {
@@ -22,7 +23,12 @@ type LodestoneCharacterResult struct {
 func HandleRequest(ctx context.Context, e LodestoneCharacterEvent) (*LodestoneCharacterResult, error) {
 	s := godestone.NewScraper(bingode.New(), godestone.EN)
 
-	character, err := s.FetchCharacter(e.ID)
+	characterId, err := strconv.ParseUint(e.ID, 10, 32)
+	if err != nil {
+		return nil, err
+	}
+
+	character, err := s.FetchCharacter(uint32(characterId))
 	if err != nil {
 		return nil, err
 	}

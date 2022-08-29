@@ -4,6 +4,9 @@
 *.dll
 *.so
 *.dylib
+main
+lodestone-search
+*.zip
 
 # Test binary, built with `go test -c`
 *.test

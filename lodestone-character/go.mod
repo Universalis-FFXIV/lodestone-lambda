@@ -4,8 +4,8 @@ go 1.19
 
 require (
 	github.com/aws/aws-lambda-go v1.34.1
-	github.com/karashiiro/bingode v1.5.1
-	github.com/xivapi/godestone/v2 v2.4.1
+	github.com/karashiiro/bingode v1.6.0
+	github.com/xivapi/godestone/v2 v2.5.0
 )
 
 require (

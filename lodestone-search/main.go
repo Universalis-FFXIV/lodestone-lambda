@@ -11,6 +11,8 @@ import (
 	"github.com/xivapi/godestone/v2"
 )
 
+const MaxResults = 40
+
 type LodestoneSearchEvent struct {
 	World     string `json:"world"`
 	FirstName string `json:"firstName"`
@@ -26,20 +28,21 @@ func HandleRequest(ctx context.Context, e LodestoneSearchEvent) (*LodestoneSearc
 
 	worldName := strings.ToLower(e.World)
 	if worldName == "" {
-		return nil, errors.New("world name not provided")
+		return nil, errors.New("[BadRequest] world name not provided")
 	}
 
 	characterName := strings.ToLower(fmt.Sprintf("%s %s", e.FirstName, e.LastName))
 	if characterName == "" {
-		return nil, errors.New("character name not provided")
+		return nil, errors.New("[BadRequest] character name not provided")
 	}
 
+	var i int
 	for res := range s.SearchCharacters(godestone.CharacterOptions{
 		Name:  characterName,
 		World: strings.ToUpper(string(worldName[0])) + worldName[1:], // World name must be captialized
 	}) {
 		if res.Error != nil {
-			return nil, res.Error
+			return nil, fmt.Errorf("[InternalServerError] %s", res.Error.Error())
 		}
 
 		if strings.ToLower(res.Name) == characterName && strings.ToLower(res.World) == worldName {
@@ -49,9 +52,14 @@ func HandleRequest(ctx context.Context, e LodestoneSearchEvent) (*LodestoneSearc
 
 			return &r, nil
 		}
+
+		i++
+		if i == MaxResults {
+			break
+		}
 	}
 
-	return nil, errors.New("no character matching those parameters was found")
+	return nil, errors.New("[NotFound] no character matching those parameters was found")
 }
 
 func main() {

@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"strconv"
 
 	"github.com/aws/aws-lambda-go/lambda"
@@ -25,12 +26,12 @@ func HandleRequest(ctx context.Context, e LodestoneCharacterEvent) (*LodestoneCh
 
 	characterId, err := strconv.ParseUint(e.ID, 10, 32)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("[BadRequest] %s", err.Error())
 	}
 
 	character, err := s.FetchCharacter(uint32(characterId))
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("[InternalServerError] %s", err.Error())
 	}
 
 	res := LodestoneCharacterResult{

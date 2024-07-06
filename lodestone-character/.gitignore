@@ -6,6 +6,7 @@
 *.dylib
 main
 lodestone-character
+bootstrap
 *.zip
 
 # Test binary, built with `go test -c`

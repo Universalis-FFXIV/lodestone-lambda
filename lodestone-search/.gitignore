@@ -6,6 +6,7 @@
 *.dylib
 main
 lodestone-search
+bootstrap
 *.zip
 
 # Test binary, built with `go test -c`
